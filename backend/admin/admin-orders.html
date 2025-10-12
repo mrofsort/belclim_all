@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Sipariş Listesi</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+    th { background: #f0f0f0; }
+    td img { max-width: 50px; }
+  </style>
+</head>
+<body>
+  <h1>📦 Sipariş Listesi</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>Tarih</th>
+        <th>Müşteri Email</th>
+        <th>Telefon</th> 
+        <th>PayPal ID</th>
+        <th>Durum</th>
+        <th>Ürünler</th>
+        <th>Toplam (€)</th>
+      </tr>
+    </thead>
+    <tbody id="ordersTable"></tbody>
+  </table>
+
+  <script>
+    // Tek fetch, tek tbody
+    fetch("/api/orders", {
+      headers: {
+        'Authorization': 'Basic ' + btoa('admin:1234')
+      }
+    })
+    .then(res => {
+      if (!res.ok) throw new Error("Siparişler alınamadı");
+      return res.json();
+    })
+    .then(orders => {
+      const tbody = document.getElementById("ordersTable");
+      tbody.innerHTML = ""; // Önce tabloyu temizle
+
+      orders.forEach(order => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${new Date(order.createdAt).toLocaleString()}</td>
+          <td>${order.payerEmail || "-"}</td>
+          <td>${order.phone || "-"}</td>
+          <td>${order.paypalOrderId || "-"}</td>
+          <td>${order.paypalStatus || "-"}</td>
+          <td>
+            ${(order.items || []).map(item => `${item.name} (${item.quantity}x) - €${item.price}`).join("<br>")}
+          </td>
+          <td>€${order.totalPrice.toFixed(2)}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    })
+    .catch(err => console.error("Hata:", err));
+  </script>
+</body>
+</html>

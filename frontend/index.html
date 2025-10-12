@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/icons/favicon.png">
+    
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://www.paypal.com/sdk/js?client-id=AYak_uboAJdYAS3mdU58IoEoz3saCZg8UI18ApQJiFeXMWKL_DYu4lPGsdfDv4Ix5kEmONj-2e0HvE8K&currency=EUR"></script>
+    <title>belclim</title>
+  </head>
+  <body>
+
+    <!-- Üst Menü -->
+    <header class="main-header">
+      <div class="header-container">
+
+        <!-- Logo -->
+        <div class="logo">
+          <a href="index.html">
+            <img src="/icons/al.png" alt="Logo">
+          </a>
+        </div>
+
+        <!-- Arama Çubuğu -->
+        <div class="search-bar">
+          <input type="text" id="searchInput" placeholder="Ürün ara..." />
+        </div>
+
+        <!-- Dil Seçici -->
+        <div class="language-selector">
+          <select id="languageSelect">
+            <option value="tr">TR</option>
+            <option value="fr">FR</option>
+            <option value="nl">NL</option>
+            <option value="en">EN</option>
+          </select>
+        </div>
+
+        <!-- Sepet -->
+        <div id="cart-icon-container">
+          <div id="cart-icon-wrapper">
+            <img src="https://img.icons8.com/material-outlined/48/000000/shopping-cart--v1.png" id="cart-icon" alt="Sepet" />
+            <span id="cart-count">0</span>
+          </div>
+          <div id="cart" class="cart">
+            <h2>🛒 Sepet</h2>
+            <ul id="cartList"></ul>
+            <p id="cartTotal">Toplam: 0 €</p>
+            <div id="paypal-button-container"></div>
+            <button id="checkoutBtn">Satın Al</button>
+          </div>
+        </div>
+
+      </div>
+    </header>
+
+    <h1>Tüm Ürünler</h1>
+    <button id="backToTopBtn" title="Yukarı Çık">⬆</button>
+
+    <div id="productList" class="product-grid"></div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
