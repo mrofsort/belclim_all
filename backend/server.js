@@ -17,11 +17,11 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// 📦 Ürün görselleri 
+// 📦 Ürün görselleri (backend içindeki uploads)
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-// 📌 İkonlar ve logolar
-app.use("/icons", express.static(path.join(__dirname, "../icons")));
 
+// 📌 İkonlar ve logolar (e-satis root içindeki icons)
+app.use("/icons", express.static(path.join(__dirname, "../icons")));
 
 // 📌 1. Admin HTML sayfasını şifreli servis et
 app.get(
@@ -54,11 +54,6 @@ app.use(express.static(path.join(__dirname, "../frontend")));
 // Test endpoint (opsiyonel)
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "../frontend/index.html"));
-});
-
-// Basit kök endpoint
-app.get("/", (req, res) => {
-  res.send("E-Ticaret API çalışıyor!");
 });
 
 // Port
