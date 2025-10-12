@@ -73,7 +73,7 @@ let cart = JSON.parse(localStorage.getItem("cart")) || [];
 // Ürünleri getir
 async function fetchProducts() {
   try {
-    const response = await fetch("http://localhost:5000/api/products");
+    const response = await fetch("https://belclim-all.onrender.com");
     if (!response.ok) throw new Error("Sunucudan ürünler alınamadı");
 
     allProducts = await response.json();
@@ -89,7 +89,7 @@ function getImageUrl(p) {
     if (p.imageUrl.startsWith("http")) {
       return p.imageUrl;
     } else {
-      return `http://localhost:5000/uploads/${p.imageUrl}`;
+      return `https://belclim-all.onrender.com/uploads/${p.imageUrl}`;
     }
   } else {
     return "https://via.placeholder.com/800x600?text=No+Image";
@@ -281,7 +281,7 @@ if (checkoutBtn) {
     };
 
     try {
-      const response = await fetch("http://localhost:5000/api/orders", {
+      const response = await fetch("https://belclim-all.onrender.com/api/orders", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(orderData),
