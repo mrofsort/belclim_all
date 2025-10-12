@@ -1,5 +1,5 @@
-// Render backend URL'i
-const API_URL = "https://belclim-all.onrender.com";
+// ✅ Render backend URL'i
+const API_URL = "https://belclim-backend.onrender.com";
 
 const productList = document.getElementById("productList");
 const translations = {
@@ -9,11 +9,9 @@ const translations = {
   en: { brand: "Brand", price: "Price", stock: "Stock", inStock: "In stock", outOfStock: "Out of stock", addToCart: "ADD TO CART", cart: "Your cart is empty", total: "Total", checkout: "Checkout", emptyCart: "Your cart is empty" }
 };
 
-// Mevcut dili localStorage'dan yükle veya TR varsayılan yap
+// 🌍 Dil seçimi
 let currentLang = localStorage.getItem("lang") || "tr";
 document.getElementById("languageSelect").value = currentLang;
-
-// Dil değiştiğinde sayfayı güncelle
 document.getElementById("languageSelect").addEventListener("change", (e) => {
   currentLang = e.target.value;
   localStorage.setItem("lang", currentLang);
@@ -25,32 +23,35 @@ const searchInput = document.getElementById("searchInput");
 let allProducts = [];
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-// Ürünleri getir
+// 🛒 Ürünleri getir
 async function fetchProducts() {
   try {
     const response = await fetch(`${API_URL}/api/products`);
     if (!response.ok) throw new Error("Sunucudan ürünler alınamadı");
     allProducts = await response.json();
+    console.log("✅ Ürünler Render backend'den çekildi:", allProducts);
     renderProducts(allProducts);
   } catch (error) {
+    console.error("❌ fetchProducts Hatası:", error);
     productList.innerHTML = `<p style="color:red;">${error.message}</p>`;
   }
 }
 
-// Görsel fallback
+// 🖼️ Ürün görselini hazırla
 function getImageUrl(product) {
   if (product.imageUrl && product.imageUrl.trim()) {
-    return product.imageUrl.startsWith("http") ? product.imageUrl : `${API_URL}/uploads/${product.imageUrl}`;
-  } else {
-    return "https://via.placeholder.com/800x600?text=No+Image";
+    return product.imageUrl.startsWith("http")
+      ? product.imageUrl
+      : `${API_URL}/uploads/${product.imageUrl}`;
   }
+  return "https://via.placeholder.com/800x600?text=No+Image";
 }
 
-// Ürünleri render et
+// 🧱 Ürünleri ekrana bas
 function renderProducts(products) {
   productList.innerHTML = "";
   products.forEach((product) => {
-    const existingItem = cart.find(item => item._id === product._id);
+    const existingItem = cart.find((item) => item._id === product._id);
     const quantity = existingItem ? existingItem.quantity : 0;
     const div = document.createElement("div");
     div.className = "product";
@@ -69,36 +70,40 @@ function renderProducts(products) {
   });
 }
 
-// Arama filtresi
+// 🔍 Arama filtresi
 searchInput.addEventListener("input", () => {
   const query = searchInput.value.toLowerCase();
-  const filtered = allProducts.filter(p => p.name.toLowerCase().includes(query));
+  const filtered = allProducts.filter((p) =>
+    p.name.toLowerCase().includes(query)
+  );
   renderProducts(filtered);
 });
 
-// Sepete ekle
+// ➕ Sepete ekle
 function addToCart(productId) {
-  const existingItem = cart.find(item => item._id === productId);
+  const existingItem = cart.find((item) => item._id === productId);
   if (existingItem) existingItem.quantity++;
   else {
-    const selectedProduct = allProducts.find(p => p._id === productId);
+    const selectedProduct = allProducts.find((p) => p._id === productId);
     if (selectedProduct) cart.push({ ...selectedProduct, quantity: 1 });
   }
   updateCartDisplay();
   const qtyElement = document.getElementById(`qty-${productId}`);
   if (qtyElement) {
-    const item = cart.find(p => p._id === productId);
-    if (item && item.quantity > 0) { qtyElement.textContent = item.quantity; qtyElement.style.display = "inline-block"; }
-    else qtyElement.style.display = "none";
+    const item = cart.find((p) => p._id === productId);
+    if (item && item.quantity > 0) {
+      qtyElement.textContent = item.quantity;
+      qtyElement.style.display = "inline-block";
+    } else qtyElement.style.display = "none";
   }
 }
 
-// Sepeti güncelle
+// 🔄 Sepeti güncelle
 function updateCartDisplay() {
   const cartList = document.getElementById("cartList");
   if (cartList) {
     cartList.innerHTML = "";
-    cart.forEach(item => {
+    cart.forEach((item) => {
       const li = document.createElement("li");
       li.className = "cart-item";
       li.innerHTML = `
@@ -123,25 +128,52 @@ function updateCartDisplay() {
   }
   localStorage.setItem("cart", JSON.stringify(cart));
   const cartCount = document.getElementById("cart-count");
-  if (cartCount) cartCount.textContent = cart.reduce((sum, item) => sum + item.quantity, 0);
+  if (cartCount)
+    cartCount.textContent = cart.reduce((sum, item) => sum + item.quantity, 0);
 }
 
-// Sipariş gönder
+// 🧾 Sipariş gönder
 const checkoutBtn = document.getElementById("checkoutBtn");
 if (checkoutBtn) {
   checkoutBtn.addEventListener("click", async () => {
-    if (cart.length === 0) { alert("Sepetiniz boş!"); return; }
-    const orderData = { items: cart.map(({ _id, name, price, quantity }) => ({ productId: _id, name, price, quantity })), totalPrice: cart.reduce((sum, item) => sum + item.price * item.quantity, 0) };
+    if (cart.length === 0) {
+      alert("Sepetiniz boş!");
+      return;
+    }
+    const orderData = {
+      items: cart.map(({ _id, name, price, quantity }) => ({
+        productId: _id,
+        name,
+        price,
+        quantity,
+      })),
+      totalPrice: cart.reduce((sum, item) => sum + item.price * item.quantity, 0),
+    };
     try {
-      const response = await fetch(`${API_URL}/api/orders`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(orderData) });
-      if (!response.ok) { const error = await response.json(); alert("Sipariş gönderilemedi: " + error.message); return; }
+      const response = await fetch(`${API_URL}/api/orders`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(orderData),
+      });
+      if (!response.ok) {
+        const error = await response.json();
+        alert("Sipariş gönderilemedi: " + error.message);
+        return;
+      }
       const data = await response.json();
       alert(`Siparişiniz alındı! Sipariş ID: ${data.orderId}`);
-      cart = []; updateCartDisplay();
-    } catch (error) { alert("Sipariş gönderilirken hata oluştu."); console.error(error); }
+      cart = [];
+      updateCartDisplay();
+    } catch (error) {
+      alert("Sipariş gönderilirken hata oluştu.");
+      console.error(error);
+    }
   });
 }
 
-// Sayfa yüklendiğinde çalıştır
-window.onload = () => { fetchProducts(); updateCartDisplay(); };
+// 🚀 Sayfa yüklenince
+window.onload = () => {
+  fetchProducts();
+  updateCartDisplay();
+};
 
