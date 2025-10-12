@@ -1,5 +1,3 @@
-const API_URL = "https://belclim-all.onrender.com"; // Render URL'i
-
 const productList = document.getElementById("productList");
 const translations = {
   tr: { brand: "Marka", price: "Fiyat", stock: "Stok", inStock: "Var", outOfStock: "Yok", addToCart: "SEPETE EKLE", cart: "Sepetiniz boş", total: "Toplam", checkout: "Satın Al", emptyCart: "Sepetiniz boş" },
@@ -26,7 +24,7 @@ let cart = JSON.parse(localStorage.getItem("cart")) || [];
 // Ürünleri getir
 async function fetchProducts() {
   try {
-    const response = await fetch(`${API_URL}/products`);
+    const response = await fetch("/api/products"); // Render backend'e relative path
     if (!response.ok) throw new Error("Sunucudan ürünler alınamadı");
     allProducts = await response.json();
     renderProducts(allProducts);
@@ -38,10 +36,9 @@ async function fetchProducts() {
 // Görsel fallback
 function getImageUrl(p) {
   if (p.imageUrl && p.imageUrl.trim()) {
-    return p.imageUrl.startsWith("http") ? p.imageUrl : `${API_URL}/uploads/${p.imageUrl}`;
-  } else {
-    return "https://via.placeholder.com/800x600?text=No+Image";
-  }
+    if (p.imageUrl.startsWith("http")) return p.imageUrl;
+    else return `/uploads/${p.imageUrl}`; // relative path
+  } else return "https://via.placeholder.com/800x600?text=No+Image";
 }
 
 // Ürünleri render et
@@ -70,7 +67,7 @@ function renderProducts(products) {
 // Arama filtresi
 searchInput.addEventListener("input", () => {
   const query = searchInput.value.toLowerCase();
-  const filtered = allProducts.filter((p) => p.name.toLowerCase().includes(query));
+  const filtered = allProducts.filter(p => p.name.toLowerCase().includes(query));
   renderProducts(filtered);
 });
 
@@ -79,14 +76,14 @@ function addToCart(productId) {
   const existingItem = cart.find((item) => item._id === productId);
   if (existingItem) existingItem.quantity++;
   else {
-    const selectedProduct = allProducts.find((p) => p._id === productId);
+    const selectedProduct = allProducts.find(p => p._id === productId);
     if (selectedProduct) cart.push({...selectedProduct, quantity:1});
   }
   updateCartDisplay();
   const qtyElement = document.getElementById(`qty-${productId}`);
   if (qtyElement) {
     const item = cart.find(p=>p._id===productId);
-    if(item && item.quantity>0) { qtyElement.textContent=item.quantity; qtyElement.style.display="inline-block"; }
+    if(item && item.quantity>0){ qtyElement.textContent=item.quantity; qtyElement.style.display="inline-block"; }
     else qtyElement.style.display="none";
   }
 }
@@ -127,11 +124,11 @@ function updateCartDisplay() {
 // Sipariş gönderme
 const checkoutBtn=document.getElementById("checkoutBtn");
 if(checkoutBtn){
-  checkoutBtn.addEventListener("click",async()=>{
+  checkoutBtn.addEventListener("click", async ()=>{
     if(cart.length===0){ alert("Sepetiniz boş!"); return; }
-    const orderData={items:cart.map(({_id,name,price,quantity})=>({productId:_id,name,price,quantity})),totalPrice:cart.reduce((sum,item)=>sum+item.price*item.quantity,0)};
+    const orderData={ items: cart.map(({_id,name,price,quantity})=>({productId:_id,name,price,quantity})), totalPrice: cart.reduce((sum,item)=>sum+item.price*item.quantity,0) };
     try{
-      const response=await fetch(`${API_URL}/api/orders`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(orderData)});
+      const response=await fetch("/api/orders",{ method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(orderData) });
       if(!response.ok){ const error=await response.json(); alert("Sipariş gönderilemedi: "+error.message); return; }
       const data=await response.json();
       alert(`Siparişiniz alındı! Sipariş ID: ${data.orderId}`);
@@ -140,6 +137,6 @@ if(checkoutBtn){
   });
 }
 
-// PayPal ve diğer mevcut kodlar aynı kalacak...
+// PayPal ve diğer mevcut kodlar aynen kalabilir
 
 window.onload = ()=>{ fetchProducts(); updateCartDisplay(); };
