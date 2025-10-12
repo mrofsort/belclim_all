@@ -26,7 +26,7 @@ let cart = JSON.parse(localStorage.getItem("cart")) || [];
 // Ürünleri getir
 async function fetchProducts() {
   try {
-    const response = await fetch(`${API_URL}/api/products`);
+    const response = await fetch(`${API_URL}/products`);
     if (!response.ok) throw new Error("Sunucudan ürünler alınamadı");
     allProducts = await response.json();
     renderProducts(allProducts);
