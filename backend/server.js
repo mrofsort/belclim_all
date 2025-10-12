@@ -51,6 +51,11 @@ app.use("/api/products", productRoutes);
 // 📌 4. Frontend klasörünü servis et (diğer HTML, JS, CSS dosyaları)
 app.use(express.static(path.join(__dirname, "../frontend")));
 
+// Test endpoint (opsiyonel)
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend/index.html"));
+});
+
 // Basit kök endpoint
 app.get("/", (req, res) => {
   res.send("E-Ticaret API çalışıyor!");
