@@ -13,8 +13,19 @@ const orderRoutes = require("./routes/orderRoutes");
 
 const app = express();
 
-// Middleware
-app.use(cors());
+// ==================== 🌐 CORS AYARLARI ====================
+app.use(
+  cors({
+    origin: [
+      "https://belclim-all.onrender.com", // Frontend (Render)
+      "http://localhost:5500" // Lokal test için (opsiyonel)
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true
+  })
+);
+
+// ==================== 🔧 MIDDLEWARE ====================
 app.use(express.json());
 
 // 📦 Ürün görselleri (backend içindeki uploads)
@@ -23,11 +34,11 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 // 📌 İkonlar ve logolar (e-satis root içindeki icons)
 app.use("/icons", express.static(path.join(__dirname, "../icons")));
 
-// 📌 1. Admin HTML sayfasını şifreli servis et
+// ==================== 🔐 ADMIN PANEL ====================
 app.get(
   "/admin-orders.html",
   basicAuth({
-    users: { admin: "1234" }, // kullanıcı adı: şifre
+    users: { admin: "1234" },
     challenge: true
   }),
   (req, res) => {
@@ -35,7 +46,9 @@ app.get(
   }
 );
 
-// 📌 2. /api/orders rotasını şifreli yap
+// ==================== 🧾 API ROTALARI ====================
+
+// 🧾 Sipariş rotası (şifre korumalı)
 app.use(
   "/api/orders",
   basicAuth({
@@ -45,30 +58,27 @@ app.use(
   orderRoutes
 );
 
-// 📌 3. Diğer API rotaları
+// 🛒 Ürün rotası (herkese açık)
 app.use("/api/products", productRoutes);
 
-// 📌 4. Frontend klasörünü servis et (diğer HTML, JS, CSS dosyaları)
+// ==================== 🖼 FRONTEND SERVİS ====================
 app.use(express.static(path.join(__dirname, "../frontend")));
 
-// Test endpoint (opsiyonel)
+// Ana sayfa isteği
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "../frontend/index.html"));
 });
 
-// Port
+// ==================== ⚙️ SUNUCU & DATABASE ====================
 const PORT = process.env.PORT || 5000;
 
-// DB bağlantısı ve sunucuyu başlat
 mongoose
-  .connect(process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-  })
+  .connect(process.env.MONGO_URI)
   .then(() => {
     console.log("✅ MongoDB bağlantısı başarılı");
     app.listen(PORT, () => {
       console.log(`🚀 Sunucu ${PORT} portunda çalışıyor`);
+      console.log(`🌍 Backend aktif: https://belclim-backend.onrender.com`);
     });
   })
   .catch((err) => {
