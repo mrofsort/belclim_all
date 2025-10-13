@@ -233,6 +233,26 @@ if (checkoutBtn) {
   });
 }
 
+// 🛒 Sepet aç/kapa kontrolü
+document.addEventListener("DOMContentLoaded", () => {
+  const cartIconWrapper = document.getElementById("cart-icon-wrapper");
+  const cart = document.getElementById("cart");
+
+  if (cartIconWrapper && cart) {
+    cartIconWrapper.addEventListener("click", (event) => {
+      event.stopPropagation(); // dışa tıklamayı engelle
+      cart.classList.toggle("active");
+    });
+
+    // Sayfanın başka bir yerine tıklayınca sepeti kapat
+    document.addEventListener("click", (event) => {
+      if (!cart.contains(event.target) && !cartIconWrapper.contains(event.target)) {
+        cart.classList.remove("active");
+      }
+    });
+  }
+});
+
 // 🚀 Sayfa yüklenince
 window.onload = () => {
   fetchProducts();
