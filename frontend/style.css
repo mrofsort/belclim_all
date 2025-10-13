@@ -397,3 +397,6 @@ h1 {
   outline: none;
   font-size: 16px;
 }
+#cart.open {
+  display: block;
+}
