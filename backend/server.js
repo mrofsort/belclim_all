@@ -16,12 +16,10 @@ const app = express();
 // ==================== 🌐 CORS AYARLARI ====================
 app.use(
   cors({
-    origin: [
-      "https://belclim-all.onrender.com", // Frontend (Render)
-      "http://localhost:5500" // Lokal test için (opsiyonel)
-    ],
+    origin: ["https://belclim-all.onrender.com", "http://localhost:5500"],
     methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
   })
 );
 

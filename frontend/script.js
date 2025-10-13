@@ -3,10 +3,54 @@ const API_URL = "https://belclim-backend.onrender.com";
 
 const productList = document.getElementById("productList");
 const translations = {
-  tr: { brand: "Marka", price: "Fiyat", stock: "Stok", inStock: "Var", outOfStock: "Yok", addToCart: "SEPETE EKLE", cart: "Sepetiniz boş", total: "Toplam", checkout: "Satın Al", emptyCart: "Sepetiniz boş" },
-  fr: { brand: "Marque", price: "Prix", stock: "Stock", inStock: "En stock", outOfStock: "Rupture", addToCart: "AJOUTER AU PANIER", cart: "Votre panier est vide", total: "Total", checkout: "Acheter", emptyCart: "Votre panier est vide" },
-  nl: { brand: "Merk", price: "Prijs", stock: "Voorraad", inStock: "Op voorraad", outOfStock: "Niet op voorraad", addToCart: "IN WINKELWAGEN", cart: "Uw winkelwagen is leeg", total: "Totaal", checkout: "Afrekenen", emptyCart: "Uw winkelwagen is leeg" },
-  en: { brand: "Brand", price: "Price", stock: "Stock", inStock: "In stock", outOfStock: "Out of stock", addToCart: "ADD TO CART", cart: "Your cart is empty", total: "Total", checkout: "Checkout", emptyCart: "Your cart is empty" }
+  tr: {
+    brand: "Marka",
+    price: "Fiyat",
+    stock: "Stok",
+    inStock: "Var",
+    outOfStock: "Yok",
+    addToCart: "SEPETE EKLE",
+    cart: "Sepetiniz boş",
+    total: "Toplam",
+    checkout: "Satın Al",
+    emptyCart: "Sepetiniz boş"
+  },
+  fr: {
+    brand: "Marque",
+    price: "Prix",
+    stock: "Stock",
+    inStock: "En stock",
+    outOfStock: "Rupture",
+    addToCart: "AJOUTER AU PANIER",
+    cart: "Votre panier est vide",
+    total: "Total",
+    checkout: "Acheter",
+    emptyCart: "Votre panier est vide"
+  },
+  nl: {
+    brand: "Merk",
+    price: "Prijs",
+    stock: "Voorraad",
+    inStock: "Op voorraad",
+    outOfStock: "Niet op voorraad",
+    addToCart: "IN WINKELWAGEN",
+    cart: "Uw winkelwagen is leeg",
+    total: "Totaal",
+    checkout: "Afrekenen",
+    emptyCart: "Uw winkelwagen is leeg"
+  },
+  en: {
+    brand: "Brand",
+    price: "Price",
+    stock: "Stock",
+    inStock: "In stock",
+    outOfStock: "Out of stock",
+    addToCart: "ADD TO CART",
+    cart: "Your cart is empty",
+    total: "Total",
+    checkout: "Checkout",
+    emptyCart: "Your cart is empty"
+  }
 };
 
 // 🌍 Dil seçimi
@@ -26,7 +70,9 @@ let cart = JSON.parse(localStorage.getItem("cart")) || [];
 // 🛒 Ürünleri getir
 async function fetchProducts() {
   try {
-    const response = await fetch(`${API_URL}/api/products`);
+    const response = await fetch(`${API_URL}/api/products`, {
+      headers: { "Content-Type": "application/json" }
+    });
     if (!response.ok) throw new Error("Sunucudan ürünler alınamadı");
     allProducts = await response.json();
     console.log("✅ Ürünler Render backend'den çekildi:", allProducts);
@@ -60,10 +106,18 @@ function renderProducts(products) {
       <h2><a href="product.html?id=${product._id}">${product.name}</a></h2>
       <p>${translations[currentLang].brand}: ${product.brand || "-"}</p>
       <p>${translations[currentLang].price}: ${product.price} €</p>
-      <p>${translations[currentLang].stock}: ${product.inStock ? translations[currentLang].inStock : translations[currentLang].outOfStock}</p>
+      <p>${translations[currentLang].stock}: ${
+      product.inStock
+        ? translations[currentLang].inStock
+        : translations[currentLang].outOfStock
+    }</p>
       <div class="product-actions">
-        <button onclick='addToCart("${product._id}")'>${translations[currentLang].addToCart}</button>
-        <span class="product-qty" id="qty-${product._id}" style="display:${quantity>0?'inline-block':'none'}">${quantity}</span>
+        <button onclick='addToCart("${product._id}")'>${
+      translations[currentLang].addToCart
+    }</button>
+        <span class="product-qty" id="qty-${product._id}" style="display:${
+      quantity > 0 ? "inline-block" : "none"
+    }">${quantity}</span>
       </div>
     `;
     productList.appendChild(div);
@@ -123,8 +177,13 @@ function updateCartDisplay() {
       `;
       cartList.appendChild(li);
     });
-    const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-    document.getElementById("cartTotal").textContent = `Toplam: ${total.toFixed(2)} €`;
+    const total = cart.reduce(
+      (sum, item) => sum + item.price * item.quantity,
+      0
+    );
+    document.getElementById(
+      "cartTotal"
+    ).textContent = `Toplam: ${total.toFixed(2)} €`;
   }
   localStorage.setItem("cart", JSON.stringify(cart));
   const cartCount = document.getElementById("cart-count");
@@ -145,15 +204,18 @@ if (checkoutBtn) {
         productId: _id,
         name,
         price,
-        quantity,
+        quantity
       })),
-      totalPrice: cart.reduce((sum, item) => sum + item.price * item.quantity, 0),
+      totalPrice: cart.reduce(
+        (sum, item) => sum + item.price * item.quantity,
+        0
+      )
     };
     try {
       const response = await fetch(`${API_URL}/api/orders`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(orderData),
+        body: JSON.stringify(orderData)
       });
       if (!response.ok) {
         const error = await response.json();
