@@ -16,9 +16,13 @@ const app = express();
 // ==================== 🌐 CORS AYARLARI ====================
 app.use(
   cors({
-    origin: ["https://belclim-all.onrender.com", "http://localhost:5500"],
+    origin: [
+      "https://belclim.eu",
+      "https://www.belclim.eu",
+      "https://belclim-all.onrender.com",
+      "https://belclim-backend.onrender.com",
+    ],
     methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
   })
 );
@@ -30,14 +34,14 @@ app.use(express.json());
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // 📌 İkonlar ve logolar (e-satis root içindeki icons)
-app.use("/icons", express.static(path.join(__dirname, "../icons")));
+app.use("/icons", express.static(path.join(__dirname, "../frontend/icons")));
 
 // ==================== 🔐 ADMIN PANEL ====================
 app.get(
   "/admin-orders.html",
   basicAuth({
     users: { admin: "1234" },
-    challenge: true
+    challenge: true,
   }),
   (req, res) => {
     res.sendFile(path.join(__dirname, "admin", "admin-orders.html"));
@@ -51,7 +55,7 @@ app.use(
   "/api/orders",
   basicAuth({
     users: { admin: "1234" },
-    challenge: true
+    challenge: true,
   }),
   orderRoutes
 );
@@ -60,10 +64,16 @@ app.use(
 app.use("/api/products", productRoutes);
 
 // ==================== 🖼 FRONTEND SERVİS ====================
+// Statik frontend dosyalarını sun
 app.use(express.static(path.join(__dirname, "../frontend")));
 
 // Ana sayfa isteği
 app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend/index.html"));
+});
+
+// Diğer tüm rotalar frontend'e yönlendirilsin (SPA için güvenli)
+app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "../frontend/index.html"));
 });
 
