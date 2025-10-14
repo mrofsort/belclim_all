@@ -33,7 +33,7 @@ app.use(express.json());
 // 📦 Ürün görselleri (backend içindeki uploads)
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-// 📌 İkonlar ve logolar (e-satis root içindeki icons)
+// 📌 İkonlar ve logolar (frontend içindeki icons)
 app.use("/icons", express.static(path.join(__dirname, "../frontend/icons")));
 
 // ==================== 🔐 ADMIN PANEL ====================
@@ -72,8 +72,8 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "../frontend/index.html"));
 });
 
-// Diğer tüm rotalar frontend'e yönlendirilsin (SPA için güvenli)
-app.get("*", (req, res) => {
+// ⚡ Express 5 ile uyumlu wildcard yönlendirme
+app.get("/*", (req, res) => {
   res.sendFile(path.join(__dirname, "../frontend/index.html"));
 });
 
