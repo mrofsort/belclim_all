@@ -30,7 +30,7 @@ app.use(express.json());
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // 📌 İkonlar ve logolar (e-satis root içindeki icons)
-app.use("/icons", express.static(path.join(__dirname, "../icons")));
+app.use("/icons", express.static(path.join(__dirname, "e-satis/icons")));
 
 // ==================== 🔐 ADMIN PANEL ====================
 app.get(
