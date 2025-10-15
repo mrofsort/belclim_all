@@ -253,9 +253,72 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
+
+
+// Sayfa yüklendiğinde ürünleri ve sepeti göster
+window.onload = () => {
+  fetchProducts();
+  updateCartDisplay();
+};
+// Butonu seç
+const backToTopBtn = document.getElementById("backToTopBtn");
+
+// Sayfa kaydırıldığında kontrol et
+window.onscroll = function () {
+  if (
+    document.body.scrollTop > 300 ||
+    document.documentElement.scrollTop > 300
+  ) {
+    backToTopBtn.style.display = "block"; // 300px’den fazla kaydırınca göster
+  } else {
+    backToTopBtn.style.display = "none"; // Yukarı gelince gizle
+  }
+};
+
+// Butona tıklandığında sayfayı yukarı kaydır
+backToTopBtn.addEventListener("click", () => {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  });
+});
+const cartIconWrapper = document.getElementById("cart-icon-wrapper");
+const cartPanel = document.getElementById("cart");
+
+// Sepet ikonuna tıklayınca aç/kapat
+cartIconWrapper.addEventListener("click", (e) => {
+  e.stopPropagation(); // başka tıklamaları engelle
+  cartPanel.classList.toggle("open"); // sınıfı aç/kapat
+});
+
+
+// Sayfanın başka bir yerine tıklanınca kapat
+document.addEventListener("click", (e) => {
+  if (!cartPanel.contains(e.target) && !cartIconWrapper.contains(e.target)) {
+    cartPanel.classList.remove("open");
+  }
+});
+// Sepet paneline tıklayınca panel kapanmasın
+cartPanel.addEventListener("click", (e) => {
+  e.stopPropagation();
+});
+// Tüm "Yukari Cik" butonları için
+document.querySelectorAll("#backToTopBtn").forEach((btn) => {
+  btn.addEventListener("click", (e) => {
+    e.stopPropagation(); // tıklayınca sepet kapanmasın
+  });
+});
+
+//cart-item-left
+// Tüm "Yukari Cik" butonları için
+document.querySelectorAll(".cart-item-left").forEach((btn) => {
+  btn.addEventListener("click", (e) => {
+    e.stopPropagation(); // tıklayınca sepet kapanmasın
+  });
+});
+
 // 🚀 Sayfa yüklenince
 window.onload = () => {
   fetchProducts();
   updateCartDisplay();
 };
-
