@@ -400,3 +400,133 @@ h1 {
 #cart.open {
   display: block;
 }
+
+/* ===================== Tablet & Küçük ekran ===================== */
+@media only screen and (max-width: 1024px) {
+  .product-grid {
+    justify-content: center; /* ürünleri ortaya hizala */
+    gap: 15px;
+  }
+
+  .product {
+    width: 45%; /* iki sütunlu görünüm */
+    height: auto;
+  }
+
+  .search-bar {
+    width: 60%;
+  }
+}
+
+/* ===================== Tablet Küçük boyut ===================== */
+@media only screen and (max-width: 768px) {
+  .header-container {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .search-bar {
+    width: 100%;
+  }
+
+  .product-grid {
+    gap: 10px;
+  }
+
+  .product {
+    width: 48%; /* iki sütun */
+    margin-bottom: 20px;
+  }
+
+  #cart {
+    width: 80%;
+    right: 10%;
+    top: 70px;
+    height: 70vh;
+    padding: 15px;
+  }
+
+  .language-selector {
+    top: 60px;
+    right: 20px;
+  }
+}
+
+/* ===================== Mobil ===================== */
+@media only screen and (max-width: 480px) {
+  .product-grid {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .product {
+    width: 100%; /* tek sütun */
+    height: auto;
+  }
+
+  .product-img {
+    width: 100%;
+    height: auto;
+  }
+
+  .search-bar {
+    width: 100%;
+  }
+
+  #cart {
+    width: 95%;
+    right: 2.5%;
+    top: 60px;
+    height: 70vh;
+    padding: 10px;
+  }
+
+  #checkoutBtn {
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  .product button {
+    width: 100%;
+    padding: 10px 0;
+    font-size: 14px;
+  }
+
+  #cart-count {
+    width: 16px;
+    height: 16px;
+    font-size: 10px;
+    top: -6px;
+    right: -6px;
+  }
+
+  .language-selector {
+    top: 50px;
+    right: 20px;
+  }
+}
+
+/* ===================== Çok küçük mobil ===================== */
+@media only screen and (max-width: 360px) {
+  .product {
+    padding: 8px;
+  }
+
+  .product h2 {
+    font-size: 16px;
+  }
+
+  .product p {
+    font-size: 12px;
+  }
+
+  #checkoutBtn {
+    font-size: 12px;
+    padding: 8px;
+  }
+
+  #cart {
+    padding: 8px;
+  }
+}
