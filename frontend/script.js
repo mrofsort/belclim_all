@@ -318,6 +318,31 @@ function updateCartDisplay() {
     cartCount.textContent = cart.reduce((sum, item) => sum + item.quantity, 0);
 }
 
+// ➕ Ürün miktarını artır
+function increaseQuantity(productId) {
+  const item = cart.find((p) => p._id === productId);
+  if (item) item.quantity++;
+  updateCartDisplay();
+}
+
+// ➖ Ürün miktarını azalt
+function decreaseQuantity(productId) {
+  const item = cart.find((p) => p._id === productId);
+  if (item) {
+    item.quantity--;
+    if (item.quantity <= 0) {
+      cart = cart.filter((p) => p._id !== productId);
+    }
+    updateCartDisplay();
+  }
+}
+
+// ❌ Ürünü sepetten kaldır
+function removeFromCart(productId) {
+  cart = cart.filter((p) => p._id !== productId);
+  updateCartDisplay();
+}
+
 // 🚀 Sayfa yüklenince
 window.onload = () => {
   fetchProducts();
