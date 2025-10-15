@@ -152,44 +152,7 @@ function addToCart(productId) {
   }
 }
 
-// 🔄 Sepeti güncelle
-function updateCartDisplay() {
-  const cartList = document.getElementById("cartList");
-  if (cartList) {
-    cartList.innerHTML = "";
-    cart.forEach((item) => {
-      const li = document.createElement("li");
-      li.className = "cart-item";
-      li.innerHTML = `
-        <div class="cart-item-left">
-          <img src="${getImageUrl(item)}" alt="${item.name}" class="cart-item-img"/>
-          <span class="cart-item-name">${item.name}</span>
-        </div>
-        <div class="cart-item-right">
-          <span class="cart-item-price">${item.price} €</span>
-          <div class="cart-item-qty">
-            <button class="qty-btn minus" onclick="decreaseQuantity('${item._id}')">−</button>
-            <span>${item.quantity}</span>
-            <button class="qty-btn plus" onclick="increaseQuantity('${item._id}')">+</button>
-          </div>
-          <button class="remove-btn" onclick="removeFromCart('${item._id}')">✕</button>
-        </div>
-      `;
-      cartList.appendChild(li);
-    });
-    const total = cart.reduce(
-      (sum, item) => sum + item.price * item.quantity,
-      0
-    );
-    document.getElementById(
-      "cartTotal"
-    ).textContent = `Toplam: ${total.toFixed(2)} €`;
-  }
-  localStorage.setItem("cart", JSON.stringify(cart));
-  const cartCount = document.getElementById("cart-count");
-  if (cartCount)
-    cartCount.textContent = cart.reduce((sum, item) => sum + item.quantity, 0);
-}
+
 
 // 🧾 Sipariş gönder
 const checkoutBtn = document.getElementById("checkoutBtn");
@@ -316,6 +279,44 @@ document.querySelectorAll(".cart-item-left").forEach((btn) => {
     e.stopPropagation(); // tıklayınca sepet kapanmasın
   });
 });
+// 🔄 Sepeti güncelle
+function updateCartDisplay() {
+  const cartList = document.getElementById("cartList");
+  if (cartList) {
+    cartList.innerHTML = "";
+    cart.forEach((item) => {
+      const li = document.createElement("li");
+      li.className = "cart-item";
+      li.innerHTML = `
+        <div class="cart-item-left">
+          <img src="${getImageUrl(item)}" alt="${item.name}" class="cart-item-img"/>
+          <span class="cart-item-name">${item.name}</span>
+        </div>
+        <div class="cart-item-right">
+          <span class="cart-item-price">${item.price} €</span>
+          <div class="cart-item-qty">
+            <button class="qty-btn minus" onclick="decreaseQuantity('${item._id}')">−</button>
+            <span>${item.quantity}</span>
+            <button class="qty-btn plus" onclick="increaseQuantity('${item._id}')">+</button>
+          </div>
+          <button class="remove-btn" onclick="removeFromCart('${item._id}')">✕</button>
+        </div>
+      `;
+      cartList.appendChild(li);
+    });
+    const total = cart.reduce(
+      (sum, item) => sum + item.price * item.quantity,
+      0
+    );
+    document.getElementById(
+      "cartTotal"
+    ).textContent = `Toplam: ${total.toFixed(2)} €`;
+  }
+  localStorage.setItem("cart", JSON.stringify(cart));
+  const cartCount = document.getElementById("cart-count");
+  if (cartCount)
+    cartCount.textContent = cart.reduce((sum, item) => sum + item.quantity, 0);
+}
 
 // 🚀 Sayfa yüklenince
 window.onload = () => {
